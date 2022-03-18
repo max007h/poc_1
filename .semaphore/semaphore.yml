@@ -11,7 +11,6 @@ blocks:
         - name: Build
           commands:
             - checkout
-            - sem-version java 1.8
             - mvn clean install -DskipTests --file pom.xml
 after_pipeline:
   task:
