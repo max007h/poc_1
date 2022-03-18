@@ -13,9 +13,7 @@ blocks:
             - mvn -q package -Dmaven.test.skip=true
             - echo "$DOCKER_PASSWORD" | docker login  --username "$DOCKER_USERNAME" --password-stdin
             - 'docker pull "$DOCKER_USERNAME"/semaphore-poc-log4j:latest || true'
-            - 'docker build --cache-from "$DOCKER_USERNAME"/semaphore-poc-log4j:latest \'
-            - '      --build-arg ENVIRONMENT="${ENVIRONMENT}" \'
-            - '      -t "$DOCKER_USERNAME"/semaphore-poc-log4j:latest .'
+            - 'docker build --cache-from "$DOCKER_USERNAME"/semaphore-poc-log4j:latest --build-arg ENVIRONMENT="${ENVIRONMENT}" -t "$DOCKER_USERNAME"/semaphore-poc-log4j:latest .'
             - 'docker push "$DOCKER_USERNAME"/semaphore-poc-log4j:latest'
       prologue:
         commands:
