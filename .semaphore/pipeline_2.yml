@@ -12,8 +12,13 @@ blocks:
           commands:
             - mvn -q package -Dmaven.test.skip=true
             - echo "$DOCKER_PASSWORD" | docker login  --username "$DOCKER_USERNAME" --password-stdin
-            - 'docker pull "$DOCKER_USERNAME"/semaphore-demo-java-spring:latest || true'
-            - 'docker build --cache-from "$DOCKER_USERNAME"/semaphore-demo-java-spring:latest \'
+            - 'docker pull "$DOCKER_USERNAME"/semaphore-poc-log4j:latest || true'
+            - 'docker build --cache-from "$DOCKER_USERNAME"/semaphore-poc-log4j:latest \'
             - '      --build-arg ENVIRONMENT="${ENVIRONMENT}" \'
-            - '      -t "$DOCKER_USERNAME"/semaphore-demo-java-spring:latest .'
-            - 'docker push "$DOCKER_USERNAME"/semaphore-demo-java-spring:latest'
+            - '      -t "$DOCKER_USERNAME"/semaphore-poc-log4j:latest .'
+            - 'docker push "$DOCKER_USERNAME"/semaphore-poc-log4j:latest'
+      prologue:
+        commands:
+          - checkout
+          - cache restore
+          - mvn -q test-compile -Dmaven.test.skip=true
