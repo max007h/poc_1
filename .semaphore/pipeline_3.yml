@@ -1,0 +1,29 @@
+version: v1.0
+name: Pipeline 3
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+  containers:
+    - name: main
+      image: 'semaphoreci/ubuntu:20.04'
+    - name: c2
+      image: ''
+blocks:
+  - name: 'Block #1'
+    task:
+      jobs:
+        - name: 'Job #1'
+          commands:
+            - mvn -q package -Dmaven.test.skip=true
+            - echo "$DOCKER_PASSWORD" | docker login  --username "$DOCKER_USERNAME" --password-stdin
+            - 'docker pull "$DOCKER_USERNAME"/semaphore-poc-log4j:latest || true'
+            - 'docker build --cache-from "$DOCKER_USERNAME"/semaphore-poc-log4j:latest \'
+            - '      --build-arg ENVIRONMENT="${ENVIRONMENT}" \'
+            - '      -t "$DOCKER_USERNAME"/semaphore-poc-log4j:latest .'
+            - 'docker push "$DOCKER_USERNAME"/semaphore-poc-log4j:latest'
+      prologue:
+        commands:
+          - checkout
+          - cache restore
+          - mvn -q test-compile -Dmaven.test.skip=true
