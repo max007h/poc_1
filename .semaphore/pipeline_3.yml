@@ -7,8 +7,6 @@ agent:
   containers:
     - name: main
       image: 'semaphoreci/ubuntu:20.04'
-    - name: c2
-      image: ''
 blocks:
   - name: 'Block #1'
     task:
@@ -27,3 +25,5 @@ blocks:
           - checkout
           - cache restore
           - mvn -q test-compile -Dmaven.test.skip=true
+      secrets:
+        - name: max007_hub
