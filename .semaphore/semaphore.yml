@@ -17,6 +17,6 @@ after_pipeline:
     jobs:
       - name: Test
         commands:
-          - mvn test
+          - mvn test --file pom.xml
       - name: Unit/Integration Tests
         commands: []
