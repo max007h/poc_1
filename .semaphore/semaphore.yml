@@ -1,0 +1,48 @@
+version: v1.0
+name: Java
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+global_job_config:
+  prologue:
+    commands:
+      - checkout
+      - cache restore
+      - mvn -q test-compile -Dmaven.test.skip=true
+blocks:
+  - name: Maven
+    task:
+      jobs:
+        - name: Build
+          commands:
+            - checkout
+            - mvn clean install -DskipTests --file pom.xml
+  - name: Tests Technical
+    task:
+      prologue:
+        commands:
+          - checkout
+          - cache restore
+          - mvn -q test-compile -Dmaven.test.skip=true
+      agent:
+        machine:
+          type: e1-standard-2
+          os_image: ubuntu1804
+      jobs:
+        - name: Test IT/UI
+          commands:
+            - mvn test
+after_pipeline:
+  task:
+    jobs:
+      - name: 'Job #1'
+        commands:
+          - java -version
+          - pwd
+          - ls -al
+promotions:
+  - name: Promotion 2
+    pipeline_file: pipeline_3.yml
+    auto_promote:
+      when: branch = 'master' AND result = 'passed'
