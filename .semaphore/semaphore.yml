@@ -1,0 +1,23 @@
+version: v1.0
+name: Java
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+blocks:
+  - name: Maven
+    task:
+      jobs:
+        - name: Build
+          commands:
+            - checkout
+            - sem-version java 1.8
+            - mvn -B package --file pom.xml
+after_pipeline:
+  task:
+    jobs:
+      - name: Test
+        commands:
+          - mvn test
+      - name: Unit/Integration Tests
+        commands: []
